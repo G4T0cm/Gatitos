@@ -359,7 +359,7 @@ header p{font-size:.92rem;color:#c05080;font-weight:700;margin-top:3px;}
   <div class="auth-box">
     <div class="auth-logo">🐱</div>
     <h1>Nyaa House</h1>
-    <p>Tu casita de gatitos ♪</p>
+    <p>Tu casita kawaii de gatitos ♪</p>
 
     <div class="auth-tabs">
       <button class="auth-tab active" onclick="showAuthTab('login')">Entrar</button>
@@ -1237,10 +1237,22 @@ let eggRunning = false, eggAnimId = null, eggHiScore = 0;
 const EGG_W = 560, EGG_H = 380;
 
 function openEasterEgg(){
-  document.getElementById('eggOverlay').style.display = 'flex';
+  // stop any running game first
+  eggRunning = false;
+  if(eggAnimId){ cancelAnimationFrame(eggAnimId); eggAnimId=null; }
+  // reset to start screen
+  document.getElementById('eggStartMsg').style.display  = 'flex';
+  document.getElementById('eggOverlayMsg').style.display = 'none';
+  // clear canvas
   const canvas = document.getElementById('eggCanvas');
   canvas.width  = EGG_W;
   canvas.height = EGG_H;
+  const ctx = canvas.getContext('2d');
+  const sky = ctx.createLinearGradient(0,0,0,EGG_H);
+  sky.addColorStop(0,'#08082a'); sky.addColorStop(1,'#1a0848');
+  ctx.fillStyle = sky; ctx.fillRect(0,0,EGG_W,EGG_H);
+  // show overlay
+  document.getElementById('eggOverlay').style.display = 'flex';
 }
 function closeEasterEgg(){
   eggRunning = false;
@@ -1251,7 +1263,9 @@ window.openEasterEgg = openEasterEgg;
 window.closeEasterEgg = closeEasterEgg;
 
 function eggStart(){
-  document.getElementById('eggStartMsg').style.display = 'none';
+  eggRunning = false;
+  if(eggAnimId){ cancelAnimationFrame(eggAnimId); eggAnimId=null; }
+  document.getElementById('eggStartMsg').style.display  = 'none';
   document.getElementById('eggOverlayMsg').style.display = 'none';
   eggRunning = true;
   runEgg();
@@ -1259,6 +1273,8 @@ function eggStart(){
 window.eggStart = eggStart;
 
 function eggRestart(){
+  eggRunning = false;
+  if(eggAnimId){ cancelAnimationFrame(eggAnimId); eggAnimId=null; }
   document.getElementById('eggOverlayMsg').style.display = 'none';
   eggRunning = true;
   runEgg();
@@ -1266,7 +1282,11 @@ function eggRestart(){
 window.eggRestart = eggRestart;
 
 function runEgg(){
-  const canvas = document.getElementById('eggCanvas');
+  // Clone canvas to wipe all previous event listeners
+  const oldCanvas = document.getElementById('eggCanvas');
+  const newCanvas = oldCanvas.cloneNode(false);
+  oldCanvas.parentNode.replaceChild(newCanvas, oldCanvas);
+  const canvas = newCanvas;
   const ctx = canvas.getContext('2d');
   canvas.width = EGG_W; canvas.height = EGG_H;
 
