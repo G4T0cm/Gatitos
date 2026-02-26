@@ -1,0 +1,1150 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nyaa House — Mi Casita de Gatitos</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --pk1:#ff85b3; --pk2:#e8436e; --pk3:#ffc2d9; --pk4:#fff0f6;
+  --lila:#c9a0f5; --mint:#7ee8c0; --yell:#f5c842;
+  --cream:#fffaf8; --txt:#5a2040;
+  --sh:0 6px 24px rgba(220,60,110,.16);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;}
+body{
+  font-family:'Nunito',sans-serif;
+  background:radial-gradient(ellipse at 20% 10%,#ffd6eb 0%,#f8e0ff 50%,#cce8ff 100%);
+  min-height:100vh; color:var(--txt); overflow-x:hidden;
+}
+
+/* ── BG PETALS ── */
+.bg{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+.petal{position:absolute;animation:fall linear infinite;opacity:.22;}
+@keyframes fall{0%{transform:translateY(-40px) rotate(0);}100%{transform:translateY(110vh) rotate(540deg);}}
+
+/* ════════════════════════════════
+   AUTH SCREEN
+════════════════════════════════ */
+#authScreen{
+  position:fixed;inset:0;z-index:200;
+  display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(ellipse at 20% 10%,#ffd6eb 0%,#f8e0ff 50%,#cce8ff 100%);
+}
+.auth-box{
+  background:white;border-radius:28px;padding:32px 28px;
+  max-width:380px;width:92%;
+  border:2.5px solid var(--pk3);
+  box-shadow:0 20px 60px rgba(220,60,110,.22);
+  text-align:center;
+  animation:fadeIn .3s ease;
+}
+.auth-logo{font-size:3.5rem;margin-bottom:6px;}
+.auth-box h1{
+  font-size:1.7rem;font-weight:900;color:var(--pk2);
+  text-shadow:2px 2px 0 #fff;margin-bottom:4px;
+}
+.auth-box p{font-size:.85rem;color:#c060a0;font-weight:700;margin-bottom:22px;}
+
+.auth-tabs{display:flex;background:#fde8f0;border-radius:16px;padding:4px;margin-bottom:20px;gap:4px;}
+.auth-tab{
+  flex:1;padding:8px;border-radius:12px;border:none;cursor:pointer;
+  font-weight:800;font-size:.9rem;font-family:'Nunito',sans-serif;
+  color:#c060a0;background:none;transition:all .2s;
+}
+.auth-tab.active{background:white;color:var(--pk2);box-shadow:0 2px 8px rgba(220,60,110,.15);}
+
+.auth-field{
+  display:flex;flex-direction:column;gap:4px;margin-bottom:12px;text-align:left;
+}
+.auth-field label{font-size:.78rem;font-weight:800;color:#c060a0;}
+.auth-field input{
+  padding:10px 14px;border:2px solid var(--pk3);border-radius:12px;
+  font-size:.95rem;font-family:'Nunito',sans-serif;font-weight:700;color:var(--txt);
+  outline:none;transition:border-color .2s;
+}
+.auth-field input:focus{border-color:var(--pk1);}
+
+.btn-auth{
+  width:100%;padding:11px;border-radius:16px;border:none;cursor:pointer;
+  background:linear-gradient(135deg,var(--pk1),var(--pk2));color:white;
+  font-weight:900;font-size:1rem;font-family:'Nunito',sans-serif;
+  box-shadow:0 4px 16px rgba(220,60,110,.35);
+  transition:transform .15s,box-shadow .15s;margin-top:4px;
+}
+.btn-auth:hover{transform:translateY(-2px);box-shadow:0 7px 22px rgba(220,60,110,.4);}
+.btn-auth:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+
+.auth-err{
+  background:#ffe0e0;color:#c03030;font-size:.8rem;font-weight:700;
+  padding:8px 12px;border-radius:10px;margin-bottom:10px;
+  border:1.5px solid #ffb0b0;display:none;
+}
+.auth-sep{font-size:.78rem;color:#c090b0;font-weight:700;margin:10px 0;display:flex;align-items:center;gap:8px;}
+.auth-sep::before,.auth-sep::after{content:'';flex:1;height:1px;background:var(--pk3);}
+
+/* ── LAYOUT ── */
+#app{position:relative;z-index:1;max-width:920px;margin:0 auto;padding:14px 12px 80px;}
+
+/* ── HEADER ── */
+header{text-align:center;padding:16px 0 8px;position:relative;}
+header h1{font-size:clamp(1.8rem,5vw,2.6rem);font-weight:900;color:var(--pk2);letter-spacing:-.5px;text-shadow:2px 2px 0 #fff,4px 4px 0 rgba(232,67,110,.2);}
+header p{font-size:.92rem;color:#c05080;font-weight:700;margin-top:3px;}
+
+/* user chip */
+#userChip{
+  display:inline-flex;align-items:center;gap:8px;
+  background:white;border:2px solid var(--pk3);border-radius:50px;
+  padding:5px 14px 5px 8px;margin-top:8px;
+  box-shadow:var(--sh);cursor:pointer;transition:box-shadow .2s;
+}
+#userChip:hover{box-shadow:0 8px 24px rgba(220,60,110,.22);}
+.user-avatar{
+  width:28px;height:28px;border-radius:50%;
+  background:linear-gradient(135deg,var(--pk1),var(--pk2));
+  display:flex;align-items:center;justify-content:center;
+  font-size:.85rem;font-weight:900;color:white;
+}
+.user-name{font-weight:800;font-size:.85rem;color:var(--pk2);}
+.logout-btn{
+  font-size:.7rem;font-weight:800;color:#c080a0;
+  border:none;background:none;cursor:pointer;padding:0;font-family:'Nunito',sans-serif;
+}
+.logout-btn:hover{color:var(--pk2);}
+
+/* ── HUD BAR ── */
+#hud{
+  display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;
+  background:white;border-radius:50px;padding:7px 20px;
+  box-shadow:var(--sh);border:2px solid var(--pk3);
+  margin:10px auto 16px;width:fit-content;
+}
+.hud-item{display:flex;align-items:center;gap:5px;font-weight:800;font-size:.9rem;color:var(--pk2);padding:2px 8px;}
+.hud-icon{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:900;color:white;flex-shrink:0;}
+.hud-icon.gold{background:linear-gradient(135deg,#f5c842,#e09010);}
+.hud-icon.star{background:linear-gradient(135deg,#c9a0f5,#9060e0);}
+.hud-icon.cat{background:linear-gradient(135deg,var(--pk1),var(--pk2));}
+
+/* ── SYNC INDICATOR ── */
+#syncDot{
+  position:fixed;top:12px;left:12px;z-index:99;
+  width:10px;height:10px;border-radius:50%;background:#ccc;
+  transition:background .3s;
+}
+#syncDot.ok{background:#3ec87a;}
+#syncDot.saving{background:#f5c842;animation:pulse .6s infinite;}
+#syncDot.err{background:#e84343;}
+@keyframes pulse{50%{opacity:.4;}}
+
+/* ── MUSIC PLAYER ── */
+#musicPlayer{
+  position:fixed;bottom:16px;right:16px;z-index:999;
+  background:white;border-radius:20px;border:2px solid var(--pk3);
+  box-shadow:0 6px 24px rgba(220,60,110,.22);
+  padding:10px 14px 12px;display:flex;flex-direction:column;gap:8px;min-width:224px;
+}
+#musicPlayer.collapsed{
+  min-width:unset;padding:8px;border-radius:50%;
+  background:linear-gradient(135deg,var(--pk1),var(--pk2));
+  border-color:transparent;box-shadow:0 4px 16px rgba(220,60,110,.4);
+}
+#musicPlayer.collapsed #musicControls{display:none;}
+#musicPlayer.collapsed #musicToggleBtn{background:none;box-shadow:none;width:38px;height:38px;}
+#musicToggleBtn{
+  background:linear-gradient(135deg,var(--pk1),var(--pk2));border:none;border-radius:50%;
+  width:36px;height:36px;font-size:1.1rem;cursor:pointer;box-shadow:0 3px 10px rgba(220,60,110,.3);
+  transition:transform .2s;align-self:flex-end;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:white;
+}
+#musicToggleBtn:hover{transform:scale(1.1) rotate(-8deg);}
+#musicControls{display:flex;flex-direction:column;gap:8px;}
+.music-title{font-size:.76rem;font-weight:800;color:var(--pk2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:196px;text-align:center;}
+.music-btns{display:flex;gap:6px;align-items:center;justify-content:center;}
+.mbtn{border:none;cursor:pointer;border-radius:50%;width:34px;height:34px;display:flex;align-items:center;justify-content:center;font-size:1rem;transition:transform .15s;background:#fde8f0;color:var(--pk2);flex-shrink:0;}
+.mbtn:hover{transform:scale(1.15);}
+.mbtn.main-play{width:40px;height:40px;font-size:1.2rem;background:linear-gradient(135deg,var(--pk1),var(--pk2));color:white;}
+.vol-row{display:flex;align-items:center;gap:6px;}
+.vol-row span{font-size:.88rem;}
+#volSlider{-webkit-appearance:none;appearance:none;flex:1;height:5px;border-radius:10px;background:var(--pk3);outline:none;cursor:pointer;}
+#volSlider::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:linear-gradient(135deg,var(--pk1),var(--pk2));cursor:pointer;}
+#volSlider::-moz-range-thumb{width:14px;height:14px;border-radius:50%;border:none;background:linear-gradient(135deg,var(--pk1),var(--pk2));cursor:pointer;}
+
+/* ── TABS ── */
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;justify-content:center;}
+.tab{padding:7px 18px;border-radius:50px;border:2px solid var(--pk3);background:white;color:var(--pk2);font-weight:800;font-size:.88rem;cursor:pointer;transition:all .15s;font-family:'Nunito',sans-serif;}
+.tab:hover,.tab.active{background:linear-gradient(135deg,var(--pk1),var(--pk2));color:white;border-color:transparent;box-shadow:0 4px 14px rgba(220,60,110,.3);}
+
+/* ── PANELS ── */
+.panel{display:none;}
+.panel.active{display:block;animation:fadeIn .28s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+
+/* ── SECTION TITLE ── */
+.sec-title{font-weight:900;font-size:1.15rem;color:var(--pk2);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.sec-title .dot{width:10px;height:10px;border-radius:50%;background:linear-gradient(135deg,var(--pk1),var(--pk2));flex-shrink:0;}
+
+/* ════════════════════════════
+   CSS CATS
+════════════════════════════ */
+.cat-figure{width:80px;height:80px;position:relative;margin:0 auto 6px;animation:catIdle 3s ease-in-out infinite;flex-shrink:0;}
+@keyframes catIdle{0%,100%{transform:translateY(0);}50%{transform:translateY(-5px);}}
+.cat-body{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:52px;height:44px;border-radius:50% 50% 44% 44% / 58% 58% 42% 42%;}
+.cat-head{position:absolute;top:4px;left:50%;transform:translateX(-50%);width:42px;height:36px;border-radius:50%;}
+.cat-ear-l,.cat-ear-r{position:absolute;top:-2px;width:0;height:0;}
+.cat-ear-l{left:3px;border-left:8px solid transparent;border-right:8px solid transparent;border-bottom:14px solid var(--ear-col,#f0a0b0);}
+.cat-ear-r{right:3px;border-left:8px solid transparent;border-right:8px solid transparent;border-bottom:14px solid var(--ear-col,#f0a0b0);}
+.cat-inner-ear-l,.cat-inner-ear-r{position:absolute;top:2px;width:0;height:0;}
+.cat-inner-ear-l{left:5px;border-left:5px solid transparent;border-right:5px solid transparent;border-bottom:9px solid var(--inner-ear,#ffccdd);}
+.cat-inner-ear-r{right:5px;border-left:5px solid transparent;border-right:5px solid transparent;border-bottom:9px solid var(--inner-ear,#ffccdd);}
+.cat-eyes{position:absolute;top:14px;left:50%;transform:translateX(-50%);width:32px;display:flex;justify-content:space-between;align-items:center;}
+.cat-eye{width:8px;height:8px;border-radius:50%;background:var(--eye-col,#2a1030);position:relative;}
+.cat-eye::after{content:'';position:absolute;top:1px;left:1px;width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.7);}
+.cat-eye.happy-eye{width:10px;height:5px;border-radius:10px 10px 0 0;background:none;border-top:2.5px solid var(--eye-col,#2a1030);}
+.cat-nose{position:absolute;top:22px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:4px solid transparent;border-right:4px solid transparent;border-top:5px solid #e07090;}
+.cat-mouth{position:absolute;top:27px;left:50%;transform:translateX(-50%);width:12px;height:5px;border-bottom:2px solid #c05070;border-left:2px solid #c05070;border-right:2px solid #c05070;border-radius:0 0 6px 6px;background:none;}
+.cat-whiskers{position:absolute;top:21px;left:50%;transform:translateX(-50%);width:52px;}
+.w{position:absolute;height:1.5px;background:rgba(100,40,70,.3);border-radius:2px;}
+.w.wl1{width:18px;top:0;right:28px;transform:rotate(-10deg);}
+.w.wl2{width:18px;top:5px;right:28px;transform:rotate(5deg);}
+.w.wr1{width:18px;top:0;left:28px;transform:rotate(10deg);}
+.w.wr2{width:18px;top:5px;left:28px;transform:rotate(-5deg);}
+.cat-tail{position:absolute;bottom:4px;right:-12px;width:22px;height:10px;border-radius:0 10px 10px 0;transform-origin:left center;animation:tailWag 2.5s ease-in-out infinite;background:var(--body-col,#f5b8c8);}
+@keyframes tailWag{0%,100%{transform:rotate(-20deg);}50%{transform:rotate(20deg);}}
+.cat-paw-l,.cat-paw-r{position:absolute;bottom:0;width:14px;height:9px;border-radius:50%;background:var(--body-col,#f5b8c8);}
+.cat-paw-l{left:6px;} .cat-paw-r{right:6px;}
+.stripe{position:absolute;height:3px;border-radius:2px;background:rgba(0,0,0,.12);}
+.cat-pink   {--body-col:#f5b8c8;--head-col:#f5b8c8;--ear-col:#e890a8;--inner-ear:#ffddee;--eye-col:#3a1040;}
+.cat-orange {--body-col:#f5c090;--head-col:#f5c090;--ear-col:#e09050;--inner-ear:#ffe0b0;--eye-col:#3a2000;}
+.cat-grey   {--body-col:#c8c4d8;--head-col:#c8c4d8;--ear-col:#a0a0b8;--inner-ear:#e0ddf0;--eye-col:#202040;}
+.cat-white  {--body-col:#f0eef8;--head-col:#f0eef8;--ear-col:#dcd8f0;--inner-ear:#fff0f8;--eye-col:#2040a0;}
+.cat-black  {--body-col:#3a3040;--head-col:#3a3040;--ear-col:#2a2030;--inner-ear:#7a5070;--eye-col:#ffe080;}
+.cat-cream  {--body-col:#f0d8b0;--head-col:#f0d8b0;--ear-col:#d8b888;--inner-ear:#fff0d0;--eye-col:#3a2010;}
+.cat-spotted{--body-col:#f8d4a0;--head-col:#f8d4a0;--ear-col:#e0a870;--inner-ear:#ffe8c0;--eye-col:#304000;}
+.cat-lilac  {--body-col:#d8b8f0;--head-col:#d8b8f0;--ear-col:#b890d8;--inner-ear:#f0deff;--eye-col:#401860;}
+
+/* ── CAT GRID & CARDS ── */
+.cat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:14px;}
+.cat-card{background:white;border-radius:22px;padding:18px 14px 14px;border:2px solid var(--pk3);box-shadow:var(--sh);text-align:center;transition:transform .2s,box-shadow .2s;position:relative;overflow:visible;}
+.cat-card:hover{transform:translateY(-4px);box-shadow:0 14px 36px rgba(220,60,110,.24);}
+.cat-name{font-weight:900;font-size:1.05rem;color:var(--pk2);margin-bottom:2px;}
+.cat-breed{font-size:.75rem;color:#b060a0;font-weight:700;}
+.cat-mood{font-size:.88rem;font-weight:800;color:#d04070;margin:6px 0 8px;}
+.stat-row{display:flex;justify-content:center;gap:5px;margin:8px 0 6px;flex-wrap:wrap;}
+.badge{font-size:.7rem;font-weight:800;padding:2px 8px;border-radius:16px;display:flex;align-items:center;gap:3px;}
+.badge.hun{background:#ffe4b5;color:#b06000;}
+.badge.hap{background:#ffd6e8;color:#b0205a;}
+.badge.nrg{background:#d0eeff;color:#0060a0;}
+.badge.cln{background:#d0ffea;color:#006040;}
+.bar-wrap{height:6px;background:#f0e0ea;border-radius:8px;margin:2px 0;overflow:hidden;}
+.bar{height:100%;border-radius:8px;transition:width .5s ease;}
+.bar.bh{background:linear-gradient(90deg,#ffd060,#ff8800);}
+.bar.bhp{background:linear-gradient(90deg,#ff88b8,#e83468);}
+.bar.be{background:linear-gradient(90deg,#70ccff,#0088ee);}
+.bar.bc{background:linear-gradient(90deg,#70ffb8,#00a860);}
+.card-acts{display:flex;gap:5px;justify-content:center;flex-wrap:wrap;margin-top:10px;}
+.btn-act{padding:6px 11px;border-radius:24px;border:none;cursor:pointer;font-weight:800;font-size:.78rem;font-family:'Nunito',sans-serif;transition:transform .15s;display:flex;align-items:center;gap:3px;}
+.btn-act:hover{transform:scale(1.1);}
+.btn-act.feed{background:#ffe4b5;color:#a06000;}
+.btn-act.play{background:#ffd6e8;color:#a0205a;}
+.btn-act.sleep{background:#d0eeff;color:#005090;}
+.btn-act.bath{background:#d0ffea;color:#005040;}
+.btn-act.rename{background:#ede0ff;color:#6030b0;}
+.tag{position:absolute;font-size:.64rem;font-weight:900;padding:2px 7px;border-radius:14px;}
+.tag-age{top:10px;right:10px;background:var(--pk3);color:var(--pk2);}
+.tag-new{top:10px;left:10px;background:#f5c842;color:#7a5000;animation:blink 1.4s infinite;}
+@keyframes blink{50%{opacity:.35;}}
+
+/* ── ADOPT SHOP ── */
+.adopt-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;}
+.adopt-card{background:white;border-radius:20px;padding:16px 12px;border:2px solid var(--pk3);box-shadow:var(--sh);text-align:center;transition:transform .2s;}
+.adopt-card:hover{transform:translateY(-3px);}
+.adopt-card h3{font-weight:900;font-size:.95rem;color:var(--pk2);margin:6px 0 2px;}
+.adopt-card p{font-size:.73rem;color:#b060a0;font-weight:600;margin-bottom:8px;line-height:1.3;}
+.price-pill{display:inline-flex;align-items:center;gap:4px;background:#f5f0d0;color:#806000;font-weight:900;font-size:.82rem;padding:3px 12px;border-radius:16px;margin-bottom:8px;}
+.price-coin{width:14px;height:14px;border-radius:50%;background:linear-gradient(135deg,#f5c842,#d08010);flex-shrink:0;}
+.btn-adopt{width:100%;padding:7px;border-radius:18px;border:none;cursor:pointer;background:linear-gradient(135deg,var(--pk1),var(--pk2));color:white;font-weight:900;font-size:.88rem;font-family:'Nunito',sans-serif;transition:transform .15s,opacity .15s;}
+.btn-adopt:hover{transform:scale(1.04);}
+.btn-adopt:disabled{opacity:.38;cursor:not-allowed;transform:none;}
+.owned-badge{font-size:.72rem;color:#c070a0;font-weight:800;margin-bottom:5px;}
+
+/* ── ACTIVITIES ── */
+.activity-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px;}
+.act-card{background:white;border-radius:22px;padding:20px 16px 16px;border:2px solid var(--pk3);box-shadow:var(--sh);text-align:center;cursor:pointer;transition:transform .2s,box-shadow .2s;}
+.act-card:hover{transform:translateY(-4px);box-shadow:0 12px 30px rgba(220,60,110,.22);}
+.act-card .act-icon{width:58px;height:58px;border-radius:18px;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-size:2rem;}
+.act-card h4{font-weight:900;font-size:1rem;color:var(--pk2);margin-bottom:3px;}
+.act-card p{font-size:.78rem;color:#b060a0;font-weight:600;margin-top:2px;line-height:1.4;}
+.act-reward{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:10px;font-size:.82rem;font-weight:900;background:#fdf0f6;border-radius:12px;padding:6px 10px;}
+.reward-coin{display:flex;align-items:center;gap:4px;color:#906000;}
+.reward-star{display:flex;align-items:center;gap:4px;color:#6030b0;}
+.coin-dot{width:13px;height:13px;border-radius:50%;background:linear-gradient(135deg,#f5c842,#d08010);flex-shrink:0;}
+.star-dot{width:13px;height:13px;border-radius:50%;background:linear-gradient(135deg,#c9a0f5,#9060e0);flex-shrink:0;}
+.cooldown{height:5px;background:#f0e0ea;border-radius:8px;margin-top:10px;overflow:hidden;}
+.cooldown-bar{height:100%;background:linear-gradient(90deg,var(--pk1),var(--pk2));border-radius:8px;transition:width .8s linear;}
+.cd-text{font-size:.72rem;color:#c090b0;font-weight:700;margin-top:4px;}
+.ready-text{font-size:.8rem;color:#008050;font-weight:900;margin-top:6px;}
+
+/* ════════════════════════════
+   RANKING
+════════════════════════════ */
+.ranking-wrap{display:flex;flex-direction:column;gap:10px;}
+.rank-card{
+  background:white;border-radius:18px;padding:14px 18px;
+  border:2px solid var(--pk3);box-shadow:var(--sh);
+  display:flex;align-items:center;gap:14px;
+  transition:transform .15s;
+}
+.rank-card:hover{transform:translateX(3px);}
+.rank-card.me{border-color:var(--pk1);background:#fff5f9;}
+.rank-pos{
+  font-size:1.4rem;font-weight:900;color:var(--pk2);
+  min-width:36px;text-align:center;
+}
+.rank-pos.gold{color:#d09000;}
+.rank-pos.silver{color:#8090a0;}
+.rank-pos.bronze{color:#b06030;}
+.rank-avatar{
+  width:42px;height:42px;border-radius:50%;flex-shrink:0;
+  background:linear-gradient(135deg,var(--pk1),var(--pk2));
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.2rem;font-weight:900;color:white;
+}
+.rank-info{flex:1;min-width:0;}
+.rank-info h4{font-weight:900;font-size:.95rem;color:var(--pk2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.rank-info p{font-size:.76rem;color:#c060a0;font-weight:700;}
+.rank-stats{display:flex;flex-direction:column;align-items:flex-end;gap:3px;}
+.rank-xp{font-weight:900;font-size:1rem;color:var(--lila);}
+.rank-cats{font-size:.75rem;font-weight:700;color:#c060a0;}
+.rank-loading{text-align:center;padding:30px;color:#c060a0;font-weight:700;}
+
+/* ── RECORDS ── */
+.records-wrap{display:flex;flex-direction:column;gap:10px;}
+.stat-rec{background:white;border-radius:14px;padding:12px 16px;border:2px solid var(--pk3);display:flex;align-items:center;gap:12px;}
+.stat-rec .sr-icon{width:38px;height:38px;border-radius:12px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1.2rem;}
+.stat-rec .sr-info h4{font-weight:900;color:var(--pk2);font-size:.92rem;}
+.stat-rec .sr-info p{font-size:.74rem;color:#c070a0;font-weight:600;}
+.stat-rec .sr-val{margin-left:auto;font-weight:900;font-size:1.1rem;color:var(--pk2);}
+.hist-row{padding:8px 14px;background:white;border-radius:12px;margin-bottom:6px;border:2px solid var(--pk3);display:flex;justify-content:space-between;align-items:center;}
+.hist-row span{font-size:.84rem;font-weight:700;color:var(--txt);}
+.hist-row time{font-size:.72rem;color:#c090b0;font-weight:700;margin-left:10px;flex-shrink:0;}
+
+/* ── EMPTY & TOAST & MODAL ── */
+.empty{text-align:center;padding:36px 16px;}
+.empty-icon{font-size:3rem;margin-bottom:10px;}
+.empty h3{font-weight:900;color:var(--pk2);font-size:1.2rem;margin-bottom:4px;}
+.empty p{color:#c070a0;font-weight:600;font-size:.88rem;}
+#toast{position:fixed;bottom:76px;left:50%;transform:translateX(-50%) translateY(14px);background:linear-gradient(135deg,var(--pk1),var(--pk2));color:white;font-weight:800;font-size:.92rem;padding:9px 22px;border-radius:50px;box-shadow:0 5px 18px rgba(220,60,110,.38);pointer-events:none;opacity:0;transition:all .28s;z-index:998;white-space:nowrap;max-width:90vw;overflow:hidden;text-overflow:ellipsis;}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.modal-bg{position:fixed;inset:0;background:rgba(255,160,200,.45);backdrop-filter:blur(5px);z-index:500;display:flex;align-items:center;justify-content:center;}
+.modal{background:white;border-radius:26px;padding:26px 22px;max-width:360px;width:90%;text-align:center;border:3px solid var(--pk3);box-shadow:0 18px 52px rgba(220,60,110,.28);animation:fadeIn .2s ease;}
+.modal h2{font-weight:900;font-size:1.4rem;color:var(--pk2);margin-bottom:8px;}
+.modal p{font-size:.9rem;color:#c060a0;font-weight:600;margin-bottom:14px;}
+.modal input{width:100%;padding:9px 14px;border:2px solid var(--pk3);border-radius:12px;font-size:.95rem;font-family:'Nunito',sans-serif;font-weight:700;color:var(--txt);outline:none;margin-bottom:12px;}
+.modal input:focus{border-color:var(--pk1);}
+.modal-btns{display:flex;gap:8px;justify-content:center;}
+.btn-m{padding:8px 22px;border-radius:26px;border:none;cursor:pointer;font-weight:900;font-size:.9rem;font-family:'Nunito',sans-serif;transition:transform .13s;}
+.btn-m:hover{transform:scale(1.05);}
+.btn-m.ok{background:linear-gradient(135deg,var(--pk1),var(--pk2));color:white;}
+.btn-m.cancel{background:#f0e0ea;color:var(--pk2);}
+</style>
+</head>
+<body>
+
+<div class="bg" id="bgDeco"></div>
+<div id="syncDot" title="Estado de sincronización"></div>
+
+<!-- AUTH SCREEN -->
+<div id="authScreen">
+  <div class="auth-box">
+    <div class="auth-logo">🐱</div>
+    <h1>Nyaa House</h1>
+    <p>Tu casita de gatos ♪</p>
+
+    <div class="auth-tabs">
+      <button class="auth-tab active" onclick="showAuthTab('login')">Entrar</button>
+      <button class="auth-tab" onclick="showAuthTab('register')">Registrarse</button>
+    </div>
+
+    <div id="authErr" class="auth-err"></div>
+
+    <!-- LOGIN -->
+    <div id="loginForm">
+      <div class="auth-field">
+        <label>Correo electrónico</label>
+        <input type="email" id="loginEmail" placeholder="tu@correo.com" autocomplete="email">
+      </div>
+      <div class="auth-field">
+        <label>Contraseña</label>
+        <input type="password" id="loginPass" placeholder="••••••••" autocomplete="current-password">
+      </div>
+      <button class="btn-auth" onclick="doLogin()">Entrar 🐾</button>
+    </div>
+
+    <!-- REGISTER -->
+    <div id="registerForm" style="display:none">
+      <div class="auth-field">
+        <label>Nombre de usuario</label>
+        <input type="text" id="regUser" placeholder="Nombre kawaii..." maxlength="20" autocomplete="username">
+      </div>
+      <div class="auth-field">
+        <label>Correo electrónico</label>
+        <input type="email" id="regEmail" placeholder="tu@correo.com" autocomplete="email">
+      </div>
+      <div class="auth-field">
+        <label>Contraseña (mín. 6 caracteres)</label>
+        <input type="password" id="regPass" placeholder="••••••••" autocomplete="new-password">
+      </div>
+      <button class="btn-auth" onclick="doRegister()">Crear cuenta 💕</button>
+    </div>
+  </div>
+</div>
+
+<!-- YOUTUBE API -->
+<div id="ytContainer" style="position:fixed;bottom:-9999px;left:-9999px;width:1px;height:1px;overflow:hidden;">
+  <div id="ytPlayer"></div>
+</div>
+
+<!-- MUSIC PLAYER -->
+<div id="musicPlayer" class="collapsed">
+  <button id="musicToggleBtn" onclick="togglePlayerOpen()" title="Música">🎵</button>
+  <div id="musicControls">
+    <div class="music-title" id="musicTitle">Nyaa Playlist ♪</div>
+    <div class="music-btns">
+      <button class="mbtn" onclick="prevTrack()">⏮</button>
+      <button class="mbtn main-play" id="playBtn" onclick="togglePlay()">▶</button>
+      <button class="mbtn" onclick="nextTrack()">⏭</button>
+      <button class="mbtn" id="muteBtn" onclick="toggleMute()">🔊</button>
+    </div>
+    <div class="vol-row">
+      <span>🔈</span>
+      <input type="range" id="volSlider" min="0" max="100" value="60" oninput="setVolume(this.value)">
+      <span>🔊</span>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="app" style="display:none">
+  <header>
+    <h1>Nyaa House 🏠</h1>
+    <p>Tu casita kawaii de gatitos ♪</p>
+    <div id="userChip">
+      <div class="user-avatar" id="userInitial">?</div>
+      <span class="user-name" id="userNameDisplay">...</span>
+      <button class="logout-btn" onclick="doLogout()">Salir</button>
+    </div>
+  </header>
+
+  <div id="hud">
+    <div class="hud-item"><div class="hud-icon gold">$</div><span id="coins">0</span> monedas</div>
+    <div class="hud-item"><div class="hud-icon star">XP</div><span id="xp">0</span></div>
+    <div class="hud-item"><div class="hud-icon cat">^.^</div><span id="catCount">0</span> gatos</div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('home')">🏠 Mi Casa</button>
+    <button class="tab" onclick="switchTab('adopt')">🐾 Adoptar</button>
+    <button class="tab" onclick="switchTab('activities')">🎮 Actividades</button>
+    <button class="tab" onclick="switchTab('ranking')">🏆 Ranking</button>
+    <button class="tab" onclick="switchTab('records')">📋 Registros</button>
+  </div>
+
+  <div class="panel active" id="tab-home">
+    <div class="sec-title"><div class="dot"></div>Mis gatitos (<span id="myCount">0</span>)</div>
+    <div class="cat-grid" id="myCats"></div>
+  </div>
+
+  <div class="panel" id="tab-adopt">
+    <div class="sec-title"><div class="dot"></div>Refugio de adopción</div>
+    <p style="font-size:.84rem;color:#c050a0;font-weight:700;margin-bottom:12px;">¡Todos merecen un hogar lleno de amor! 💕</p>
+    <div class="adopt-grid" id="adoptShop"></div>
+  </div>
+
+  <div class="panel" id="tab-activities">
+    <div class="sec-title"><div class="dot"></div>Actividades (gana monedas)</div>
+    <div class="activity-grid" id="activityGrid"></div>
+  </div>
+
+  <div class="panel" id="tab-ranking">
+    <div class="sec-title"><div class="dot"></div>Ranking global 🏆</div>
+    <div class="ranking-wrap" id="rankingWrap">
+      <div class="rank-loading">Cargando ranking... ✨</div>
+    </div>
+  </div>
+
+  <div class="panel" id="tab-records">
+    <div class="sec-title"><div class="dot"></div>Registros de la casa</div>
+    <div class="records-wrap" id="recordsWrap"></div>
+  </div>
+</div>
+
+<div id="toast"></div>
+<div id="modalBg" style="display:none"></div>
+
+<!-- FIREBASE -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile }
+  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getDatabase, ref, set, get, onValue, update }
+  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDogYCS_MJnhGzDyjD0xGcPWUvQ0TY3n7A",
+  authDomain: "cosasdegatos-e4809.firebaseapp.com",
+  databaseURL: "https://cosasdegatos-e4809-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "cosasdegatos-e4809",
+  storageBucket: "cosasdegatos-e4809.firebasestorage.app",
+  messagingSenderId: "1076180961746",
+  appId: "1:1076180961746:web:558e4e25c177dbd0a1200b"
+};
+
+const fbApp = initializeApp(firebaseConfig);
+const auth  = getAuth(fbApp);
+const db    = getDatabase(fbApp);
+
+// ── expose to window so non-module JS can use ──
+window._auth = auth;
+window._db   = db;
+window._ref  = ref;
+window._set  = set;
+window._get  = get;
+window._onValue = onValue;
+window._update  = update;
+window._createUser  = createUserWithEmailAndPassword;
+window._signIn      = signInWithEmailAndPassword;
+window._signOut     = signOut;
+window._updateProfile = updateProfile;
+
+// ── Auth state listener ──
+onAuthStateChanged(auth, user => {
+  if(user) {
+    window._currentUser = user;
+    window.onUserLoggedIn(user);
+  } else {
+    window._currentUser = null;
+    window.onUserLoggedOut();
+  }
+});
+</script>
+
+<script>
+// ══════════════════════════════════════════════
+//  GLOBALS
+// ══════════════════════════════════════════════
+let state = { coins:50, xp:0, cats:[], actCD:{}, records:[], nextId:1 };
+let currentUid = null;
+let saveTimeout = null;
+let rankingListener = null;
+
+// ══════════════════════════════════════════════
+//  BG PETALS
+// ══════════════════════════════════════════════
+const PETALS=['✿','❀','✾','❁','✽'];
+const bgEl=document.getElementById('bgDeco');
+for(let i=0;i<18;i++){
+  const s=document.createElement('span');s.className='petal';
+  s.textContent=PETALS[i%PETALS.length];
+  s.style.left=Math.random()*100+'vw';
+  s.style.animationDuration=(10+Math.random()*14)+'s';
+  s.style.animationDelay=(-Math.random()*16)+'s';
+  s.style.fontSize=(.9+Math.random()*.9)+'rem';
+  bgEl.appendChild(s);
+}
+
+// ══════════════════════════════════════════════
+//  AUTH UI
+// ══════════════════════════════════════════════
+function showAuthTab(tab){
+  document.querySelectorAll('.auth-tab').forEach((t,i)=>
+    t.classList.toggle('active',['login','register'][i]===tab));
+  document.getElementById('loginForm').style.display    = tab==='login'    ? '' : 'none';
+  document.getElementById('registerForm').style.display = tab==='register' ? '' : 'none';
+  document.getElementById('authErr').style.display = 'none';
+}
+window.showAuthTab = showAuthTab;
+
+function showAuthErr(msg){
+  const el=document.getElementById('authErr');
+  el.textContent=msg; el.style.display='block';
+}
+
+async function doLogin(){
+  const email=document.getElementById('loginEmail').value.trim();
+  const pass =document.getElementById('loginPass').value;
+  if(!email||!pass){ showAuthErr('Rellena todos los campos'); return; }
+  const btn=document.querySelector('#loginForm .btn-auth');
+  btn.disabled=true; btn.textContent='Entrando...';
+  try {
+    await window._signIn(window._auth, email, pass);
+  } catch(e) {
+    btn.disabled=false; btn.textContent='Entrar 🐾';
+    const msgs = {
+      'auth/wrong-password':'Contraseña incorrecta',
+      'auth/user-not-found':'No existe esa cuenta',
+      'auth/invalid-email':'Email inválido',
+      'auth/too-many-requests':'Demasiados intentos, espera un poco',
+      'auth/invalid-credential':'Email o contraseña incorrectos',
+    };
+    showAuthErr(msgs[e.code]||'Error: '+e.message);
+  }
+}
+window.doLogin = doLogin;
+
+async function doRegister(){
+  const username=document.getElementById('regUser').value.trim();
+  const email   =document.getElementById('regEmail').value.trim();
+  const pass    =document.getElementById('regPass').value;
+  if(!username||!email||!pass){ showAuthErr('Rellena todos los campos'); return; }
+  if(username.length<2){ showAuthErr('El nombre debe tener al menos 2 caracteres'); return; }
+  const btn=document.querySelector('#registerForm .btn-auth');
+  btn.disabled=true; btn.textContent='Creando cuenta...';
+  try {
+    const cred = await window._createUser(window._auth, email, pass);
+    await window._updateProfile(cred.user, { displayName: username });
+    // create user entry in DB
+    const dbRef = window._ref(window._db, `users/${cred.user.uid}/profile`);
+    await window._set(dbRef, { username, createdAt: Date.now() });
+  } catch(e) {
+    btn.disabled=false; btn.textContent='Crear cuenta 💕';
+    const msgs = {
+      'auth/email-already-in-use':'Ese email ya está registrado',
+      'auth/invalid-email':'Email inválido',
+      'auth/weak-password':'La contraseña es demasiado corta (mín. 6)',
+    };
+    showAuthErr(msgs[e.code]||'Error: '+e.message);
+  }
+}
+window.doRegister = doRegister;
+
+async function doLogout(){
+  await window._signOut(window._auth);
+}
+window.doLogout = doLogout;
+
+// Enter key support
+document.addEventListener('keydown', e => {
+  if(e.key !== 'Enter') return;
+  const loginVisible = document.getElementById('loginForm').style.display !== 'none';
+  if(document.getElementById('authScreen').style.display !== 'none') {
+    if(loginVisible) doLogin(); else doRegister();
+  }
+});
+
+// ══════════════════════════════════════════════
+//  AUTH STATE CALLBACKS
+// ══════════════════════════════════════════════
+window.onUserLoggedIn = async function(user) {
+  currentUid = user.uid;
+  document.getElementById('authScreen').style.display = 'none';
+  document.getElementById('app').style.display = '';
+
+  const uname = user.displayName || user.email.split('@')[0];
+  document.getElementById('userNameDisplay').textContent = uname;
+  document.getElementById('userInitial').textContent = uname.charAt(0).toUpperCase();
+
+  // Load data from Firebase
+  await loadFromDB(user.uid);
+  renderCats(); updateHUD();
+  setInterval(tickCats, 5000);
+  setInterval(()=>{
+    if(document.getElementById('tab-activities').classList.contains('active')) renderActivities();
+  }, 1800);
+  syncDot('ok');
+};
+
+window.onUserLoggedOut = function() {
+  currentUid = null;
+  document.getElementById('authScreen').style.display = 'flex';
+  document.getElementById('app').style.display = 'none';
+  document.querySelector('#loginForm .btn-auth').disabled = false;
+  document.querySelector('#loginForm .btn-auth').textContent = 'Entrar 🐾';
+  document.querySelector('#registerForm .btn-auth').disabled = false;
+  document.querySelector('#registerForm .btn-auth').textContent = 'Crear cuenta 💕';
+  if(rankingListener) { rankingListener(); rankingListener = null; }
+};
+
+// ══════════════════════════════════════════════
+//  FIREBASE DB
+// ══════════════════════════════════════════════
+function syncDot(status){
+  const d=document.getElementById('syncDot');
+  d.className=''; d.classList.add(status);
+}
+
+async function loadFromDB(uid){
+  try {
+    const snap = await window._get(window._ref(window._db, `users/${uid}/gamestate`));
+    if(snap.exists()){
+      const data = snap.val();
+      state = { ...state, ...data };
+      // ensure arrays/objects exist
+      if(!state.cats) state.cats=[];
+      if(!state.actCD) state.actCD={};
+      if(!state.records) state.records=[];
+    }
+  } catch(e){ console.warn('Load error',e); }
+}
+
+function save(){
+  if(!currentUid) return;
+  syncDot('saving');
+  clearTimeout(saveTimeout);
+  saveTimeout = setTimeout(async ()=>{
+    try {
+      const uname = window._currentUser?.displayName || '?';
+      // save game state
+      await window._set(
+        window._ref(window._db, `users/${currentUid}/gamestate`),
+        { coins:state.coins, xp:state.xp, cats:state.cats,
+          actCD:state.actCD, records:state.records.slice(0,30), nextId:state.nextId }
+      );
+      // update leaderboard entry
+      await window._set(
+        window._ref(window._db, `leaderboard/${currentUid}`),
+        { username: uname, xp: state.xp, coins: state.coins,
+          cats: state.cats.length, updatedAt: Date.now() }
+      );
+      syncDot('ok');
+    } catch(e){ syncDot('err'); console.warn('Save error',e); }
+  }, 1200);
+}
+
+// ══════════════════════════════════════════════
+//  RANKING
+// ══════════════════════════════════════════════
+function renderRanking(){
+  const cont = document.getElementById('rankingWrap');
+  cont.innerHTML = '<div class="rank-loading">Cargando ranking... ✨</div>';
+
+  if(rankingListener){ rankingListener(); }
+  rankingListener = window._onValue(
+    window._ref(window._db, 'leaderboard'),
+    snap => {
+      if(!snap.exists()){ cont.innerHTML='<div class="rank-loading">Sin jugadores aún...</div>'; return; }
+      const entries = [];
+      snap.forEach(child => {
+        entries.push({ uid: child.key, ...child.val() });
+      });
+      entries.sort((a,b)=>b.xp-a.xp);
+
+      cont.innerHTML = entries.slice(0,20).map((e,i)=>{
+        const pos = i+1;
+        const isMe = e.uid === currentUid;
+        const medal = pos===1?'🥇':pos===2?'🥈':pos===3?'🥉':null;
+        const posClass = pos===1?'gold':pos===2?'silver':pos===3?'bronze':'';
+        const initial = (e.username||'?').charAt(0).toUpperCase();
+        return `<div class="rank-card${isMe?' me':''}">
+          <div class="rank-pos ${posClass}">${medal||'#'+pos}</div>
+          <div class="rank-avatar">${initial}</div>
+          <div class="rank-info">
+            <h4>${e.username||'Anon'}${isMe?' (Tú)':''}</h4>
+            <p>${e.cats||0} gatito${e.cats===1?'':'s'} adoptado${e.cats===1?'':'s'}</p>
+          </div>
+          <div class="rank-stats">
+            <div class="rank-xp">${e.xp||0} XP</div>
+            <div class="rank-cats">${e.coins||0} monedas</div>
+          </div>
+        </div>`;
+      }).join('');
+    },
+    err => { cont.innerHTML='<div class="rank-loading">Error cargando ranking</div>'; }
+  );
+}
+
+// ══════════════════════════════════════════════
+//  DATA
+// ══════════════════════════════════════════════
+const BREEDS = [
+  { id:'persian',   name:'Persa',         colorClass:'cat-white',   desc:'Elegante y perezoso',   cost:30 },
+  { id:'tabby',     name:'Atigrado',      colorClass:'cat-orange',  desc:'Curioso y travieso',    cost:20 },
+  { id:'black',     name:'Gato negro',    colorClass:'cat-black',   desc:'Misterioso y leal',     cost:25 },
+  { id:'siamese',   name:'Siamés',        colorClass:'cat-cream',   desc:'Hablador y afectuoso',  cost:35 },
+  { id:'scottish',  name:'Scottish Fold', colorClass:'cat-grey',    desc:'Tranquilo y tierno',    cost:40 },
+  { id:'mainecoon', name:'Maine Coon',    colorClass:'cat-spotted', desc:'Grande y esponjoso',    cost:45 },
+  { id:'sphinx',    name:'Sphynx',        colorClass:'cat-pink',    desc:'Raro pero adorable',    cost:50 },
+  { id:'lilac',     name:'Lavanda',       colorClass:'cat-lilac',   desc:'Soñador y dulce',       cost:55 },
+];
+
+const ACTIVITIES = [
+  { id:'pet',    name:'Achuchar',     bg:'#ffd6e8', icon:'🤗', desc:'Dale amor a tu gato',     reward:5,  xp:3,  cooldown:30,  needsCat:true  },
+  { id:'brush',  name:'Cepillar',     bg:'#e8f0ff', icon:'✨', desc:'Pelaje brillante',         reward:8,  xp:5,  cooldown:60,  needsCat:true  },
+  { id:'photo',  name:'Foto',  bg:'#fff0d4', icon:'📸', desc:'Captura el momento',      reward:12, xp:8,  cooldown:120, needsCat:true  },
+  { id:'sing',   name:'Cantarle',     bg:'#f0e8ff', icon:'🎵', desc:'Ponle música',             reward:6,  xp:4,  cooldown:45,  needsCat:true  },
+  { id:'train',  name:'Entrenar',     bg:'#d4ffe8', icon:'🏆', desc:'Aprende trucos',           reward:15, xp:12, cooldown:180, needsCat:true  },
+  { id:'garden', name:'Jardinar',     bg:'#d4ffee', icon:'🌸', desc:'Cuida el jardín',          reward:10, xp:7,  cooldown:90,  needsCat:false },
+  { id:'clean',  name:'Limpiar casa', bg:'#d4eeff', icon:'🧹', desc:'Mantén todo limpio',       reward:8,  xp:5,  cooldown:60,  needsCat:false },
+  { id:'cook',   name:'Cocinar',      bg:'#ffeed4', icon:'🍳', desc:'Prepara comida rica',      reward:10, xp:6,  cooldown:75,  needsCat:false },
+];
+
+// ══════════════════════════════════════════════
+//  TABS
+// ══════════════════════════════════════════════
+function switchTab(id){
+  document.querySelectorAll('.tab').forEach((t,i)=>{
+    t.classList.toggle('active',['home','adopt','activities','ranking','records'][i]===id);
+  });
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  if(id==='adopt') renderAdopt();
+  if(id==='activities') renderActivities();
+  if(id==='ranking') renderRanking();
+  if(id==='records') renderRecords();
+}
+window.switchTab = switchTab;
+
+// ══════════════════════════════════════════════
+//  TOAST
+// ══════════════════════════════════════════════
+let tT;
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  clearTimeout(tT); tT=setTimeout(()=>t.classList.remove('show'),2400);
+}
+
+// ══════════════════════════════════════════════
+//  MODAL
+// ══════════════════════════════════════════════
+function openRenameModal(catId){
+  const cat=state.cats.find(c=>c.id===catId); if(!cat) return;
+  const bg=document.getElementById('modalBg');
+  bg.style.display='flex';
+  bg.innerHTML=`<div class="modal">
+    <h2>✏️ Cambiar nombre</h2>
+    <p>Dale un nombre bonito a tu gatito</p>
+    <input id="ri" type="text" maxlength="20" value="${cat.name}" placeholder="Nombre kawaii...">
+    <div class="modal-btns">
+      <button class="btn-m ok" onclick="doRename(${catId})">💕 Guardar</button>
+      <button class="btn-m cancel" onclick="closeModal()">Cancelar</button>
+    </div>
+  </div>`;
+  setTimeout(()=>document.getElementById('ri')?.focus(),50);
+}
+window.openRenameModal = openRenameModal;
+
+function doRename(id){
+  const v=document.getElementById('ri')?.value?.trim(); if(!v) return;
+  const cat=state.cats.find(c=>c.id===id); if(!cat) return;
+  cat.name=v;
+  addRecord(`Renombrado a ${v}`); save(); closeModal(); renderCats();
+  showToast(`Ahora se llama ${v}!`);
+}
+window.doRename = doRename;
+
+function closeModal(){ document.getElementById('modalBg').style.display='none'; }
+window.closeModal = closeModal;
+
+// ══════════════════════════════════════════════
+//  CSS CAT BUILDER
+// ══════════════════════════════════════════════
+function buildCat(colorClass, moodKey){
+  const isHappy = moodKey==='great'||moodKey==='good';
+  const eyeClass = isHappy?'cat-eye happy-eye':'cat-eye';
+  const stripes = colorClass==='cat-orange'||colorClass==='cat-grey'
+    ?`<div class="stripe" style="width:20px;top:12px;left:12px;transform:rotate(10deg)"></div>
+      <div class="stripe" style="width:16px;top:18px;left:14px;transform:rotate(8deg)"></div>`:'';
+  return `<div class="cat-figure ${colorClass}">
+    <div class="cat-body" style="background:var(--body-col)">
+      <div class="cat-tail" style="background:var(--body-col)"></div>
+      <div class="cat-paw-l"></div><div class="cat-paw-r"></div>
+    </div>
+    <div class="cat-head" style="background:var(--head-col);position:absolute;top:4px;left:50%;transform:translateX(-50%);width:42px;height:36px;border-radius:50%;">
+      <div class="cat-ear-l"><div class="cat-inner-ear-l"></div></div>
+      <div class="cat-ear-r"><div class="cat-inner-ear-r"></div></div>
+      ${stripes}
+      <div class="cat-eyes"><div class="${eyeClass}"></div><div class="${eyeClass}"></div></div>
+      <div class="cat-nose"></div><div class="cat-mouth"></div>
+      <div class="cat-whiskers">
+        <div class="w wl1"></div><div class="w wl2"></div>
+        <div class="w wr1"></div><div class="w wr2"></div>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ══════════════════════════════════════════════
+//  CAT HELPERS
+// ══════════════════════════════════════════════
+const NOMS=['Mochi','Luna','Kuro','Hana','Shiro','Neko','Taro','Yuki','Sora','Hoshi',
+            'Pochi','Mimi','Coco','Lila','Miu','Sakura','Hime','Momo','Chibi','Kiki'];
+function rndName(){ return NOMS[Math.floor(Math.random()*NOMS.length)]; }
+
+function createCat(breedId){
+  const b=BREEDS.find(x=>x.id===breedId);
+  return { id:state.nextId++, breedId, name:rndName(), colorClass:b.colorClass,
+           hunger:80, happy:70, energy:90, clean:85, born:Date.now(), isNew:true };
+}
+
+function getMood(cat){
+  const avg=(cat.happy+cat.energy+(100-cat.hunger)+cat.clean)/4;
+  if(avg>=80) return { text:'😻 Muy feliz!',  key:'great' };
+  if(avg>=60) return { text:'😸 Contento~',   key:'good'  };
+  if(avg>=40) return { text:'😐 Así así...',  key:'ok'    };
+  if(avg>=20) return { text:'😿 Triste...',   key:'sad'   };
+  return { text:'🙀 Necesita ayuda!', key:'bad' };
+}
+
+function tickCats(){
+  if(!currentUid) return;
+  state.cats.forEach(cat=>{
+    cat.hunger=Math.max(0,cat.hunger-.8);
+    cat.happy =Math.max(0,cat.happy-.5);
+    cat.energy=Math.min(100,cat.energy+.3);
+    cat.clean =Math.max(0,cat.clean-.3);
+  });
+  save(); renderCats(); updateHUD();
+}
+
+// ══════════════════════════════════════════════
+//  CAT ACTIONS
+// ══════════════════════════════════════════════
+function feedCat(id){
+  const c=state.cats.find(x=>x.id===id); if(!c) return;
+  c.hunger=Math.min(100,c.hunger+30); c.happy=Math.min(100,c.happy+5);
+  addRecord(`${c.name} fue alimentado`); save(); renderCats();
+  showToast(`${c.name} comió delicioso!`); pop(id);
+}
+window.feedCat=feedCat;
+function playCat(id){
+  const c=state.cats.find(x=>x.id===id); if(!c) return;
+  if(c.energy<15){ showToast(`${c.name} está cansado...`); return; }
+  c.happy=Math.min(100,c.happy+25); c.energy=Math.max(0,c.energy-20);
+  c.hunger=Math.max(0,c.hunger-10); state.coins+=3;
+  addRecord(`${c.name} jugó contigo`); save(); renderCats(); updateHUD();
+  showToast(`${c.name} está feliz! +3 monedas`); pop(id);
+}
+window.playCat=playCat;
+function sleepCat(id){
+  const c=state.cats.find(x=>x.id===id); if(!c) return;
+  c.energy=Math.min(100,c.energy+40); c.happy=Math.min(100,c.happy+5);
+  addRecord(`${c.name} echó una siesta`); save(); renderCats();
+  showToast(`${c.name} descansó bien`); pop(id);
+}
+window.sleepCat=sleepCat;
+function bathCat(id){
+  const c=state.cats.find(x=>x.id===id); if(!c) return;
+  c.clean=Math.min(100,c.clean+40); c.happy=Math.max(0,c.happy-5);
+  addRecord(`${c.name} tomó un baño`); save(); renderCats();
+  showToast(`${c.name} huele a flores~`); pop(id);
+}
+window.bathCat=bathCat;
+
+function pop(catId){
+  const el=document.querySelector(`.cat-card[data-id="${catId}"] .cat-figure`);
+  if(!el) return; el.style.transform='scale(1.25)';
+  setTimeout(()=>el.style.transform='',300);
+}
+
+// ══════════════════════════════════════════════
+//  RENDER MY CATS
+// ══════════════════════════════════════════════
+function renderCats(){
+  const cont=document.getElementById('myCats');
+  document.getElementById('myCount').textContent=state.cats.length;
+  if(!state.cats.length){
+    cont.innerHTML=`<div class="empty"><div class="empty-icon">🐾</div><h3>Sin gatitos aún!</h3><p>Ve a adoptar tu primer amiguito</p></div>`;
+    return;
+  }
+  cont.innerHTML=state.cats.map(cat=>{
+    const mood=getMood(cat);
+    const age=Math.floor((Date.now()-cat.born)/60000);
+    const ageStr=age<60?`${age}m`:`${Math.floor(age/60)}h`;
+    return `<div class="cat-card" data-id="${cat.id}">
+      ${cat.isNew?'<span class="tag tag-new">NUEVO!</span>':''}
+      <span class="tag tag-age">${ageStr}</span>
+      ${buildCat(cat.colorClass, getMood(cat).key)}
+      <div class="cat-name">${cat.name}</div>
+      <div class="cat-breed">${BREEDS.find(b=>b.id===cat.breedId)?.name||''}</div>
+      <div class="cat-mood">${mood.text}</div>
+      <div class="stat-row">
+        <span class="badge hun">🍣 ${Math.round(cat.hunger)}</span>
+        <span class="badge hap">💕 ${Math.round(cat.happy)}</span>
+        <span class="badge nrg">⚡ ${Math.round(cat.energy)}</span>
+        <span class="badge cln">✨ ${Math.round(cat.clean)}</span>
+      </div>
+      <div style="padding:0 2px;">
+        <div class="bar-wrap"><div class="bar bh"  style="width:${cat.hunger}%"></div></div>
+        <div class="bar-wrap"><div class="bar bhp" style="width:${cat.happy}%"></div></div>
+        <div class="bar-wrap"><div class="bar be"  style="width:${cat.energy}%"></div></div>
+        <div class="bar-wrap"><div class="bar bc"  style="width:${cat.clean}%"></div></div>
+      </div>
+      <div class="card-acts">
+        <button class="btn-act feed"   onclick="feedCat(${cat.id})">🍣 Comer</button>
+        <button class="btn-act play"   onclick="playCat(${cat.id})">🎮 Jugar</button>
+        <button class="btn-act sleep"  onclick="sleepCat(${cat.id})">😴 Dormir</button>
+        <button class="btn-act bath"   onclick="bathCat(${cat.id})">🛁 Baño</button>
+        <button class="btn-act rename" onclick="openRenameModal(${cat.id})">✏️ Nombre</button>
+      </div>
+    </div>`;
+  }).join('');
+  state.cats.forEach(c=>c.isNew=false);
+}
+
+// ══════════════════════════════════════════════
+//  RENDER ADOPT
+// ══════════════════════════════════════════════
+function renderAdopt(){
+  const cont=document.getElementById('adoptShop');
+  cont.innerHTML=BREEDS.map(b=>{
+    const owned=state.cats.filter(c=>c.breedId===b.id).length;
+    const ok=state.coins>=b.cost;
+    return `<div class="adopt-card">
+      ${buildCat(b.colorClass,'good')}
+      <h3>${b.name}</h3>
+      <p>${b.desc}</p>
+      ${owned?`<div class="owned-badge">Ya tienes ${owned}</div>`:''}
+      <div class="price-pill"><div class="price-coin"></div>${b.cost}</div>
+      <button class="btn-adopt" onclick="adoptCat('${b.id}')" ${!ok?'disabled':''}>
+        ${ok?'Adoptar':'Sin monedas'}
+      </button>
+    </div>`;
+  }).join('');
+}
+
+function adoptCat(breedId){
+  const b=BREEDS.find(x=>x.id===breedId);
+  if(!b||state.coins<b.cost) return;
+  state.coins-=b.cost;
+  const cat=createCat(breedId);
+  state.cats.push(cat);
+  addRecord(`Adoptaste a ${cat.name} (${b.name})`);
+  save(); renderAdopt(); updateHUD();
+  showToast(`¡Bienvenido/a ${cat.name}! 💕`);
+  switchTab('home'); renderCats();
+}
+window.adoptCat=adoptCat;
+
+// ══════════════════════════════════════════════
+//  RENDER ACTIVITIES
+// ══════════════════════════════════════════════
+function renderActivities(){
+  const cont=document.getElementById('activityGrid');
+  const now=Date.now();
+  cont.innerHTML=ACTIVITIES.map(act=>{
+    const last=state.actCD[act.id]||0;
+    const elapsed=(now-last)/1000;
+    const rem=Math.max(0,act.cooldown-elapsed);
+    const ready=rem===0;
+    const prog=ready?100:Math.min(100,(elapsed/act.cooldown)*100);
+    return `<div class="act-card" onclick="${ready?`doActivity('${act.id}')`:''}" style="${!ready?'opacity:.65;cursor:not-allowed':''}">
+      <div class="act-icon" style="background:${act.bg}">${act.icon}</div>
+      <h4>${act.name}</h4>
+      <p>${act.desc}</p>
+      <div class="act-reward">
+        <span class="reward-coin"><div class="coin-dot"></div>+${act.reward}</span>
+        <span class="reward-star"><div class="star-dot"></div>+${act.xp}</span>
+      </div>
+      ${!ready
+        ?`<div class="cooldown"><div class="cooldown-bar" style="width:${prog}%"></div></div>
+          <div class="cd-text">${Math.ceil(rem)}s</div>`
+        :'<div class="ready-text">¡Listo! ✅</div>'}
+    </div>`;
+  }).join('');
+}
+
+function doActivity(actId){
+  const act=ACTIVITIES.find(a=>a.id===actId); if(!act) return;
+  const now=Date.now();
+  const elapsed=(now-(state.actCD[actId]||0))/1000;
+  if(elapsed<act.cooldown){ showToast('¡Espera un poco!'); return; }
+  if(act.needsCat&&!state.cats.length){ showToast('¡Necesitas al menos un gato!'); return; }
+  state.coins+=act.reward; state.xp+=act.xp;
+  state.actCD[actId]=now;
+  if(act.needsCat&&state.cats.length){
+    const lk=state.cats[Math.floor(Math.random()*state.cats.length)];
+    if(act.id==='pet')   lk.happy=Math.min(100,lk.happy+15);
+    if(act.id==='brush') lk.clean=Math.min(100,lk.clean+20);
+    if(act.id==='sing')  lk.happy=Math.min(100,lk.happy+10);
+    if(act.id==='train') { lk.happy=Math.min(100,lk.happy+20); lk.energy=Math.max(0,lk.energy-15); }
+  }
+  addRecord(`${act.name}: +${act.reward} monedas +${act.xp} XP`);
+  save(); updateHUD(); renderActivities(); renderCats();
+  showToast(`${act.icon} ¡${act.name} completado! +${act.reward} monedas`);
+}
+window.doActivity=doActivity;
+
+// ══════════════════════════════════════════════
+//  RECORDS
+// ══════════════════════════════════════════════
+function addRecord(msg){
+  const t=new Date().toLocaleTimeString('es',{hour:'2-digit',minute:'2-digit'});
+  state.records.unshift({msg,t});
+  if(state.records.length>50) state.records.pop();
+}
+
+function renderRecords(){
+  const cont=document.getElementById('recordsWrap');
+  if(!state.records.length){
+    cont.innerHTML=`<div class="empty"><div class="empty-icon">📋</div><h3>Sin actividad aún</h3><p>¡Empieza a cuidar gatitos!</p></div>`;
+    return;
+  }
+  const adopt=state.records.filter(r=>r.msg.includes('Adoptaste')).length;
+  const feed =state.records.filter(r=>r.msg.includes('alimentado')).length;
+  const play =state.records.filter(r=>r.msg.includes('jugó')).length;
+  const stats=[
+    {icon:'🐱',label:'Gatos adoptados',val:adopt,bg:'#ffd6e8'},
+    {icon:'🍣',label:'Veces alimentado',val:feed,bg:'#fff0d4'},
+    {icon:'🎮',label:'Sesiones de juego',val:play,bg:'#d4ffe8'},
+    {icon:'💰',label:'Monedas actuales',val:state.coins,bg:'#fff8d4'},
+    {icon:'⭐',label:'XP total',val:state.xp,bg:'#ede0ff'},
+  ];
+  cont.innerHTML=stats.map(s=>`
+    <div class="stat-rec">
+      <div class="sr-icon" style="background:${s.bg}">${s.icon}</div>
+      <div class="sr-info"><h4>${s.label}</h4><p>Total histórico</p></div>
+      <span class="sr-val">${s.val}</span>
+    </div>`).join('')+
+  `<div class="sec-title" style="margin-top:14px;font-size:1rem;"><div class="dot"></div>Historial reciente</div>`+
+  state.records.slice(0,25).map(r=>`
+    <div class="hist-row"><span>${r.msg}</span><time>${r.t}</time></div>`).join('');
+}
+
+// ══════════════════════════════════════════════
+//  HUD
+// ══════════════════════════════════════════════
+function updateHUD(){
+  document.getElementById('coins').textContent=state.coins;
+  document.getElementById('xp').textContent=state.xp;
+  document.getElementById('catCount').textContent=state.cats.length;
+}
+
+// ══════════════════════════════════════════════
+//  MUSIC PLAYER
+// ══════════════════════════════════════════════
+let ytPlayer=null, playerReady=false, playerOpen=false, isMuted=false, isPlaying=false;
+const PLAYLIST_ID='rqgHWF6v_xE';
+(function(){ const t=document.createElement('script'); t.src='https://www.youtube.com/iframe_api'; document.head.appendChild(t); })();
+function onYouTubeIframeAPIReady(){
+  ytPlayer=new YT.Player('ytPlayer',{
+    height:'1',width:'1',videoId:PLAYLIST_ID,
+    playerVars:{autoplay:0,listType:'playlist',list:'PLrBjpCRSzOJBpzY7RPDI09_2-t7EMqlte',loop:1,controls:0,rel:0,fs:0,iv_load_policy:3},
+    events:{onReady:e=>{playerReady=true;e.target.setVolume(60);updateTitle();},onStateChange:onPSC}
+  });
+}
+window.onYouTubeIframeAPIReady=onYouTubeIframeAPIReady;
+function onPSC(e){
+  if(e.data===YT.PlayerState.PLAYING){isPlaying=true;document.getElementById('playBtn').textContent='⏸';updateTitle();}
+  else{isPlaying=false;document.getElementById('playBtn').textContent='▶';}
+}
+function updateTitle(){
+  try{const d=ytPlayer.getVideoData();const t=d?.title||'Nyaa Playlist ♪';document.getElementById('musicTitle').textContent=t.length>26?t.slice(0,24)+'…':t;}catch(e){}
+}
+function togglePlayerOpen(){
+  playerOpen=!playerOpen;
+  const p=document.getElementById('musicPlayer');
+  const b=document.getElementById('musicToggleBtn');
+  if(playerOpen){p.classList.remove('collapsed');b.textContent='✕';if(playerReady&&!isPlaying)ytPlayer.playVideo();}
+  else{p.classList.add('collapsed');b.textContent='🎵';}
+}
+function togglePlay(){if(!playerReady)return;isPlaying?ytPlayer.pauseVideo():ytPlayer.playVideo();}
+function nextTrack(){if(playerReady)ytPlayer.nextVideo();}
+function prevTrack(){if(playerReady)ytPlayer.previousVideo();}
+function toggleMute(){if(!playerReady)return;isMuted=!isMuted;if(isMuted){ytPlayer.mute();document.getElementById('muteBtn').textContent='🔇';}else{ytPlayer.unMute();document.getElementById('muteBtn').textContent='🔊';}}
+function setVolume(v){if(!playerReady)return;ytPlayer.setVolume(parseInt(v));if(isMuted&&v>0){ytPlayer.unMute();isMuted=false;document.getElementById('muteBtn').textContent='🔊';}}
+setInterval(()=>{if(isPlaying)updateTitle();},3000);
+window.togglePlayerOpen=togglePlayerOpen;window.togglePlay=togglePlay;window.nextTrack=nextTrack;window.prevTrack=prevTrack;window.toggleMute=toggleMute;window.setVolume=setVolume;
+</script>
+</body>
+</html>
